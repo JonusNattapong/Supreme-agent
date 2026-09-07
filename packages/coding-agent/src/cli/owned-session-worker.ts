@@ -14,6 +14,7 @@ import {
 } from "../core/orphan-process-journal.js";
 import { SESSION_LEASE_OWNER_ID_ENV, SESSION_LEASES_ENABLED_ENV } from "../core/session-lease.js";
 import { attachJsonlLineReader, serializeJsonLine } from "../modes/rpc/jsonl.js";
+import { WINDOWS_HIDDEN_PROCESS_OPTIONS } from "../utils/child-process.js";
 import { isHelpCommandRequest, PUBLIC_COMMAND_NAMES, REMOVED_COMMAND_NAMES } from "./command-registry.js";
 import { type CliSubprocessLaunchSpec, createCliSubprocessLaunchSpec } from "./subprocess-launch.js";
 
@@ -338,6 +339,7 @@ export async function runOwnedSessionWorkerFrontend(
 		const child = spawn(launch.command, launch.args, {
 			cwd: process.cwd(),
 			detached: process.platform !== "win32",
+			...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 			env: {
 				...process.env,
 				[OWNED_WORKER_ENV]: "1",

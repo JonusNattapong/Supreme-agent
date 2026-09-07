@@ -119,6 +119,7 @@ function runProcessQuery(command: string, args: string[], options?: ProcessQuery
 	return execFileSync(command, args, {
 		encoding: "utf8",
 		stdio: ["ignore", "pipe", "ignore"],
+		windowsHide: true,
 		env: options?.env,
 	});
 }

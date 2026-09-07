@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import hostedGitInfo from "hosted-git-info";
+import { WINDOWS_HIDDEN_PROCESS_OPTIONS } from "./child-process.js";
 
 /**
  * Parsed git URL information.
@@ -253,6 +254,7 @@ function runGit(cwd: string, args: string[]): string | null {
 		cwd,
 		encoding: "utf8",
 		stdio: ["ignore", "pipe", "ignore"],
+		...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 	});
 	if (result.status !== 0 || typeof result.stdout !== "string") return null;
 	return result.stdout.trim() || null;

@@ -14,6 +14,7 @@ import {
 	getSessionsDir,
 	VERSION,
 } from "../../config.js";
+
 import {
 	type AgentFamilyCatalogEntry,
 	type AgentSessionMessageAgentSummary,
@@ -53,7 +54,12 @@ import { getSessionArtifactPathForFile, readSessionInfo, type SessionInfo } from
 import { looksLikeSessionPath } from "../../core/session-resolver.js";
 import { SettingsManager } from "../../core/settings-manager.js";
 import { writeFileAtomicSync } from "../../utils/atomic-file.js";
-import { isProcessAlive, processIdExists, signalProcessGroupOrProcess } from "../../utils/child-process.js";
+import {
+	isProcessAlive,
+	processIdExists,
+	signalProcessGroupOrProcess,
+	WINDOWS_HIDDEN_PROCESS_OPTIONS,
+} from "../../utils/child-process.js";
 import type { AgentConnectionHeartbeat } from "../agent-connection/types.js";
 import { attachJsonlLineReader, serializeJsonLine } from "../rpc/jsonl.js";
 import type { PrivateFrame } from "../session-worker/private-framing.js";
@@ -3111,6 +3117,7 @@ export class DaemonSupervisor {
 		const child: ChildProcess = spawn(launch.command, launch.args, {
 			cwd: createCommand.config?.cwd ?? process.cwd(),
 			detached: true,
+			...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 			env: workerEnvironment,
 			stdio: ["ignore", "ignore", "pipe", "pipe"],
 		});
@@ -6979,6 +6986,7 @@ export class DaemonSupervisor {
 			const replacement = spawn(launch.command, launch.args, {
 				cwd: this.defaultSessionConfig.cwd ?? process.cwd(),
 				detached: true,
+				...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 				env: environment,
 				stdio: "ignore",
 			});
