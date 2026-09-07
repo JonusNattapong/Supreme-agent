@@ -40,7 +40,7 @@ export const FEATURE_HINTS: readonly FeatureHintDefinition[] = [
 	},
 	{
 		id: "subagents",
-		getText: () => "Prime Agent can delegate tasks to subagents and run them in parallel.",
+		getText: () => "Preme Agent can delegate tasks to subagents and run them in parallel.",
 	},
 	{
 		id: "agents-view",
@@ -92,11 +92,11 @@ export const FEATURE_HINTS: readonly FeatureHintDefinition[] = [
 	},
 	{
 		id: "auto-compaction",
-		getText: () => "Prime Agent automatically compacts long sessions before context fills up.",
+		getText: () => "Preme Agent automatically compacts long sessions before context fills up.",
 	},
 	{
 		id: "auto-refine",
-		getText: () => "Prime Agent self-improves by refining skills, memories, prompts, and subagents.",
+		getText: () => "Preme Agent self-improves by refining skills, memories, prompts, and subagents.",
 	},
 	{
 		id: "background-running",

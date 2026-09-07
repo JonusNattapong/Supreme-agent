@@ -29,6 +29,8 @@ export const defaultModelPerProvider: Record<KnownProvider, string> = {
 	"google-vertex": "gemini-3.1-pro-preview",
 	"github-copilot": "gpt-5.4",
 	openrouter: "moonshotai/kimi-k2.6",
+	kilocode: "kilo-auto/balanced",
+	cline: "anthropic/claude-sonnet-4.6",
 	"vercel-ai-gateway": "zai/glm-5.1",
 	xai: "grok-4.20-0309-reasoning",
 	groq: "openai/gpt-oss-120b",
@@ -167,6 +169,41 @@ function buildFallbackModel(provider: string, modelId: string, availableModels: 
 		...baseModel,
 		id: modelId,
 		name: modelId,
+	};
+}
+
+/**
+ * Resolve a runtime model switch without treating the provider catalog as an allowlist.
+ * Unknown ids are only synthesized for the provider that is already active, so a
+ * model id cannot implicitly switch transports or bypass another provider's auth.
+ */
+export function resolveProviderModelSelection(
+	availableModels: ReadonlyArray<Model<Api>>,
+	provider: string,
+	modelId: string,
+	currentModel: Model<Api> | undefined,
+): Model<Api> | undefined {
+	const trimmedModelId = modelId.trim();
+	if (!trimmedModelId) return undefined;
+
+	const exact = availableModels.find(
+		(candidate) => candidate.provider === provider && candidate.id === trimmedModelId,
+	);
+	if (exact) return exact;
+
+	if (!currentModel || currentModel.provider !== provider || provider === "prime-inference") {
+		return undefined;
+	}
+
+	return {
+		...currentModel,
+		id: trimmedModelId,
+		name: trimmedModelId,
+		input: [...currentModel.input],
+		cost: { ...currentModel.cost },
+		...(currentModel.compat ? { compat: { ...currentModel.compat } } : {}),
+		...(currentModel.thinkingLevelMap ? { thinkingLevelMap: { ...currentModel.thinkingLevelMap } } : {}),
+		...(currentModel.headers ? { headers: { ...currentModel.headers } } : {}),
 	};
 }
 

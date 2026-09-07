@@ -88,6 +88,7 @@ import {
 	resolveHeartbeatStreamingBehavior,
 	shouldDeferHeartbeatCronJob,
 } from "../../core/cron-jobs.js";
+import { resolveProviderModelSelection } from "../../core/model-resolver.js";
 import { ORPHAN_PROCESS_JOURNAL_ENV } from "../../core/orphan-process-journal.js";
 import { PromptAdmissionCancelledError, waitForPromptAdmission } from "../../core/prompt-admission.js";
 import type { CreateRlmSubagentRuntimeOptions, SubagentRuntimeHost } from "../../core/rlm-runtime.js";
@@ -368,7 +369,7 @@ const UPDATE_RESTART_ABORT_BASH_TIMEOUT_MS = 5000;
 const SUPERVISOR_FENCE_POLL_MS = 250;
 const UPDATE_RESTART_MARKER =
 	"<prime_agent_update_interrupted>\n" +
-	"Prime Agent was updated and intentionally interrupted this session. Continue from the saved transcript and restored tool/kernel state. Any running model, tool, bash, or child-agent work may have been partially completed.\n" +
+	"Preme Agent was updated and intentionally interrupted this session. Continue from the saved transcript and restored tool/kernel state. Any running model, tool, bash, or child-agent work may have been partially completed.\n" +
 	"</prime_agent_update_interrupted>";
 const RECOVERY_CHECKPOINT_EVENTS: ReadonlySet<string> = new Set([
 	"agent_start",
@@ -681,7 +682,7 @@ export class AgentDaemon {
 
 		this.registerSignalHandlers();
 		this.summarizer.start();
-		this.log(`Prime Agent daemon listening on ${this.socketPath}`);
+		this.log(`Preme Agent daemon listening on ${this.socketPath}`);
 		// No startup restore: on-disk sessions return only via --resume or the agents view.
 		if (!this.shuttingDown) {
 			this.cronScheduler.start();
@@ -4893,9 +4894,12 @@ export class AgentDaemon {
 				const state = this.getSessionState(command.activeSessionId);
 				const session = state.runtime.session;
 				const availableModels = await session.modelRegistry.refreshAvailableModels();
-				const model = availableModels.find((candidate) => {
-					return candidate.provider === command.provider && candidate.id === command.modelId;
-				});
+				const model = resolveProviderModelSelection(
+					availableModels,
+					command.provider,
+					command.modelId,
+					session.model,
+				);
 				if (!model) {
 					throw new Error(`Model not found: ${command.provider}/${command.modelId}`);
 				}

@@ -73,7 +73,7 @@ function createNpmPrefixInstall(template = "pi-prefix-"): { prefix: string; pack
 
 function createHomebrewInstall(): { packageDir: string } {
 	const prefix = mkdtempSync(join(tmpdir(), "pi-homebrew-"));
-	const packageDir = join(prefix, "Cellar", "prime-agent", "0.7.0", "libexec", "lib", "node_modules", "prime-agent");
+	const packageDir = join(prefix, "Cellar", "preme-agent", "0.7.0", "libexec", "lib", "node_modules", "preme-agent");
 	mkdirSync(packageDir, { recursive: true });
 	tempDir = prefix;
 	process.env.PI_PACKAGE_DIR = packageDir;
@@ -193,8 +193,8 @@ describe("detectInstallMethod", () => {
 
 		expect(detectInstallMethod()).toBe("homebrew");
 		expect(getSelfUpdateCommand("prime-agent")).toBeUndefined();
-		expect(getSelfUpdateUnavailableInstruction("prime-agent")).toBe("Update with: brew upgrade prime-agent");
-		expect(getUpdateInstruction("prime-agent")).toBe("Update with: brew upgrade prime-agent");
+		expect(getSelfUpdateUnavailableInstruction("prime-agent")).toBe("Update with: brew upgrade preme-agent");
+		expect(getUpdateInstruction("prime-agent")).toBe("Update with: brew upgrade preme-agent");
 	});
 
 	test("self-updates npm installs from custom prefixes", () => {
@@ -412,7 +412,7 @@ describe("detectInstallMethod", () => {
 
 describe("session paths", () => {
 	test("uses the short app-prefixed session dir env var", () => {
-		expect(ENV_SESSION_DIR).toBe("PRIME_AGENT_SESSION_DIR");
+		expect(ENV_SESSION_DIR).toBe("SUPREME_AGENT_SESSION_DIR");
 	});
 
 	test("uses the session root env var when computing sessions dir", () => {
@@ -431,9 +431,9 @@ describe("session paths", () => {
 	});
 
 	test("expands tilde in the session root env var", () => {
-		process.env[ENV_SESSION_DIR] = "~/prime-agent-sessions";
+		process.env[ENV_SESSION_DIR] = "~/preme-agent-sessions";
 
-		expect(getSessionsDir("/agent")).toBe(join(homedir(), "prime-agent-sessions"));
+		expect(getSessionsDir("/agent")).toBe(join(homedir(), "preme-agent-sessions"));
 	});
 
 	test("uses the env session root as the default session dir", () => {
