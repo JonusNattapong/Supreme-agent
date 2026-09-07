@@ -6,6 +6,7 @@ import { closeSync, existsSync, mkdirSync, openSync, renameSync, rmSync, statSyn
 import { dirname } from "node:path";
 import { StringDecoder } from "node:string_decoder";
 import { v4 as uuid } from "uuid";
+import { WINDOWS_HIDDEN_PROCESS_OPTIONS } from "../../utils/child-process.js";
 import { reapKernelOrphanProcesses, recordOrphanProcessState } from "../orphan-process-journal.js";
 import { ensureKernelPython } from "./bootstrap.js";
 import {
@@ -315,6 +316,7 @@ export class ReplKernelManager {
 				PRIME_AGENT_KERNEL_OWNER_PID: String(process.pid),
 			},
 			stdio: ["pipe", "pipe", "pipe"],
+			...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 		});
 		this.child = child;
 		if (child.pid !== undefined) recordOrphanProcessState(child.pid, true);

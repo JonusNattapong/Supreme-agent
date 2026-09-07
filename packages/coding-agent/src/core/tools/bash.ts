@@ -6,7 +6,7 @@ import { type Static, Type } from "typebox";
 import { expandCollapseHint } from "../../modes/interactive/components/keybinding-hints.js";
 import { truncateToVisualLines } from "../../modes/interactive/components/visual-truncate.js";
 import { theme } from "../../modes/interactive/theme/theme.js";
-import { waitForChildProcess } from "../../utils/child-process.js";
+import { WINDOWS_HIDDEN_PROCESS_OPTIONS, waitForChildProcess } from "../../utils/child-process.js";
 import {
 	getShellConfig,
 	getShellEnv,
@@ -14,6 +14,7 @@ import {
 	trackDetachedChildPid,
 	untrackDetachedChildPid,
 } from "../../utils/shell.js";
+
 import type { ToolDefinition, ToolRenderResultOptions } from "../extensions/types.js";
 import { previewBashCommand } from "./code-preview.js";
 import { OutputAccumulator } from "./output-accumulator.js";
@@ -75,6 +76,7 @@ export function createLocalBashOperations(options?: { shellPath?: string }): Bas
 				const child = spawn(shell, [...args, command], {
 					cwd,
 					detached: process.platform !== "win32",
+					...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 					env: env ?? getShellEnv(),
 					stdio: ["ignore", "pipe", "pipe"],
 				});

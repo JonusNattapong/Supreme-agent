@@ -1,3 +1,4 @@
+import { WINDOWS_HIDDEN_PROCESS_OPTIONS } from "../utils/child-process.js";
 /**
  * Shared command execution utilities for extensions and custom tools.
  */
@@ -61,6 +62,7 @@ export async function execCommand(
 		const proc = spawn(command, args, {
 			cwd,
 			shell: false,
+			...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 			stdio: ["ignore", "pipe", "pipe"],
 			// Merge per-call env over the parent env so callers can scope vars
 			// (e.g. herdr pane identity) without mutating the shared process.env.

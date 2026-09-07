@@ -14,6 +14,7 @@ import type { DaemonOutbound, DaemonResponse } from "../modes/daemon/daemon-prot
 import { matchesSessionIdSuffix } from "../modes/daemon/daemon-session-id.js";
 import type { SessionSummary } from "../modes/daemon/daemon-session-list.js";
 import { defaultDaemonSocketPath, normalizeSocketPath } from "../modes/daemon/daemon-socket.js";
+import { WINDOWS_HIDDEN_PROCESS_OPTIONS } from "../utils/child-process.js";
 import { isLocalPath } from "../utils/paths.js";
 import { isValidThinkingLevel } from "./args.js";
 import { formatSessionListTable } from "./daemon-list-format.js";
@@ -691,6 +692,7 @@ async function runStart(parsed: ParsedDaemonClientCommand): Promise<void> {
 	const child = spawn(process.execPath, daemonArgs, {
 		cwd: sessionArgs.config?.cwd ?? process.cwd(),
 		detached: true,
+		...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 		env: process.env,
 		stdio: "ignore",
 	});

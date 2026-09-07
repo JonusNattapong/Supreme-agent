@@ -28,7 +28,7 @@ import { globSync } from "glob";
 import ignore from "ignore";
 import { minimatch } from "minimatch";
 import { CONFIG_DIR_NAME, getBundledSkillsDir } from "../config.js";
-import { shouldUseWindowsShell } from "../utils/child-process.js";
+import { shouldUseWindowsShell, WINDOWS_HIDDEN_PROCESS_OPTIONS } from "../utils/child-process.js";
 import { type GitSource, parseGitUrl } from "../utils/git.js";
 import { canonicalizePath, isLocalPath } from "../utils/paths.js";
 import type { ResourceDiagnostic } from "./diagnostics.js";
@@ -2351,6 +2351,7 @@ export class DefaultPackageManager implements PackageManager {
 			cwd: options?.cwd,
 			stdio: isStdoutTakenOver() ? ["ignore", 2, 2] : "inherit",
 			shell: shouldUseWindowsShell(command),
+			...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 			env: getEnv(),
 		});
 	}
@@ -2365,6 +2366,7 @@ export class DefaultPackageManager implements PackageManager {
 			cwd: options?.cwd,
 			stdio: ["ignore", "pipe", "pipe"],
 			shell: shouldUseWindowsShell(command),
+			...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 			env: options?.env ? { ...baseEnv, ...options.env } : baseEnv,
 		});
 	}
@@ -2432,6 +2434,7 @@ export class DefaultPackageManager implements PackageManager {
 			stdio: ["ignore", "pipe", "pipe"],
 			encoding: "utf-8",
 			shell: shouldUseWindowsShell(command),
+			...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 			env: getEnv(),
 		});
 		if (result.error || result.status !== 0) {

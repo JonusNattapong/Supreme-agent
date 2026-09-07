@@ -4,9 +4,8 @@ import { createReadStream } from "node:fs";
 import { lstat, readlink } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { AssistantMessage, Usage, UserMessage } from "@earendil-works/pi-ai";
-import { waitForChildProcess } from "../utils/child-process.js";
+import { WINDOWS_HIDDEN_PROCESS_OPTIONS, waitForChildProcess } from "../utils/child-process.js";
 import { killProcessTree, trackDetachedChildPid, untrackDetachedChildPid } from "../utils/shell.js";
-
 export interface AgentAutonomousConfig {
 	enabled?: boolean;
 	maxContinuations?: number;
@@ -494,6 +493,7 @@ function runChildProcess(
 		const child = spawn(command, args, {
 			cwd: options.cwd,
 			detached: process.platform !== "win32",
+			...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 			shell: options.shell === true,
 			stdio: ["ignore", "pipe", "pipe"],
 		});

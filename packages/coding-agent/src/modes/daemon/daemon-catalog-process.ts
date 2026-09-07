@@ -10,6 +10,7 @@ import type { DeleteSessionFileResult } from "../../core/session-file-actions.js
 import { deleteSessionFile } from "../../core/session-file-actions.js";
 import { readSessionInfo, type SessionInfo, SessionManager } from "../../core/session-manager.js";
 
+import { WINDOWS_HIDDEN_PROCESS_OPTIONS } from "../../utils/child-process.js";
 export const DAEMON_CATALOG_ROLE_ENV = "PRIME_AGENT_INTERNAL_DAEMON_CATALOG";
 const DAEMON_CATALOG_START_TIMEOUT_MS = 30_000;
 
@@ -363,6 +364,7 @@ export class DaemonCatalogClient {
 			cwd: process.cwd(),
 			env: environment,
 			stdio: ["ignore", "ignore", "ignore", "ipc"],
+			...WINDOWS_HIDDEN_PROCESS_OPTIONS,
 		});
 		this.child = child;
 		child.on("message", (value: unknown) => this.handleMessage(value));
