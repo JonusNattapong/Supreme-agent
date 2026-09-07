@@ -61,6 +61,8 @@ prime-agent
 | Cloudflare Workers AI | `CLOUDFLARE_API_KEY` (+ `CLOUDFLARE_ACCOUNT_ID`) | `cloudflare-workers-ai` |
 | xAI | `XAI_API_KEY` | `xai` |
 | OpenRouter | `OPENROUTER_API_KEY` | `openrouter` |
+| Kilo Code | `KILO_API_KEY` | `kilocode` |
+| Cline | `CLINE_API_KEY` | `cline` |
 | Vercel AI Gateway | `AI_GATEWAY_API_KEY` | `vercel-ai-gateway` |
 | ZAI | `ZAI_API_KEY` | `zai` |
 | OpenCode Zen | `OPENCODE_API_KEY` | `opencode` |
@@ -122,6 +124,14 @@ OAuth credentials are also stored here after `/login` and managed automatically.
 ### Prime Inference
 
 Prime Inference uses the OpenAI-compatible endpoint at `https://api.pinference.ai/api/v1`. Set `PRIME_API_KEY` or store an API key for `prime-inference` via `/login`.
+
+### Kilo Code
+
+Kilo Code uses the OpenAI-compatible Kilo AI Gateway at `https://api.kilo.ai/api/gateway`. Set `KILO_API_KEY` or store an API key for `kilocode` via `/login`. The built-in model catalog is generated from Kilo's public `/models` endpoint.
+
+### Cline
+
+Cline uses the OpenAI-compatible Cline API at `https://api.cline.bot/api/v1`. Set `CLINE_API_KEY` or store an API key for `cline` via `/login`. Prime Agent ships a documented Cline model snapshot and refreshes the authenticated `/models` catalog during model generation when `CLINE_API_KEY` is available.
 
 ## Cloud Providers
 
