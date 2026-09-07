@@ -88,6 +88,7 @@ import {
 	resolveHeartbeatStreamingBehavior,
 	shouldDeferHeartbeatCronJob,
 } from "../../core/cron-jobs.js";
+import { resolveProviderModelSelection } from "../../core/model-resolver.js";
 import { ORPHAN_PROCESS_JOURNAL_ENV } from "../../core/orphan-process-journal.js";
 import { PromptAdmissionCancelledError, waitForPromptAdmission } from "../../core/prompt-admission.js";
 import type { CreateRlmSubagentRuntimeOptions, SubagentRuntimeHost } from "../../core/rlm-runtime.js";
@@ -4893,9 +4894,12 @@ export class AgentDaemon {
 				const state = this.getSessionState(command.activeSessionId);
 				const session = state.runtime.session;
 				const availableModels = await session.modelRegistry.refreshAvailableModels();
-				const model = availableModels.find((candidate) => {
-					return candidate.provider === command.provider && candidate.id === command.modelId;
-				});
+				const model = resolveProviderModelSelection(
+					availableModels,
+					command.provider,
+					command.modelId,
+					session.model,
+				);
 				if (!model) {
 					throw new Error(`Model not found: ${command.provider}/${command.modelId}`);
 				}

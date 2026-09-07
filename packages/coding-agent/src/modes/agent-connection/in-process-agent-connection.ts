@@ -15,6 +15,7 @@ import type {
 } from "../../core/cron-jobs.js";
 import type { ExtensionUIContext } from "../../core/extensions/types.js";
 import type { AcpMcpServerConfig } from "../../core/mcp/acp-mcp-types.js";
+import { resolveProviderModelSelection } from "../../core/model-resolver.js";
 import type { RefinementResult } from "../../core/refinement/index.js";
 import { type DeleteSessionFileResult, deleteSessionFile } from "../../core/session-file-actions.js";
 import { SessionManager } from "../../core/session-manager.js";
@@ -447,9 +448,7 @@ export class InProcessAgentConnection implements AgentConnection {
 
 	async setModel(provider: string, modelId: string): Promise<AgentConnectionModel> {
 		const availableModels = await this.session.modelRegistry.refreshAvailableModels();
-		const model = availableModels.find((candidate) => {
-			return candidate.provider === provider && candidate.id === modelId;
-		});
+		const model = resolveProviderModelSelection(availableModels, provider, modelId, this.session.model);
 		if (!model) {
 			throw new Error(`Model not found: ${provider}/${modelId}`);
 		}
